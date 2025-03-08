@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diploma</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="editor">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('npc')">NPC.cs</div>
+            <div class="tab" onclick="switchTab('npcdialogue')">NPCDialogue.cs</div>
+            <div class="tab" onclick="switchTab('iinteractable')">IInteractable.cs</div>
+            <div class="tab" onclick="switchTab('pausecontroller')">PauseController.cs</div>
+            <div class="video-button">
+                <a href="video.html">Посмотреть видео</a>
+            </div>            
+        </div>
+        <div id="npc" class="code-area active">
+using System.Collections;
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+
+public class NPC : MonoBehaviour, IInteractable
+{
+    public NPCDialogue dialogueData;
+    public GameObject dialoguePanel;
+    public TMP_Text dialogueText, nameText;
+    public Image portraitImage;
+
+    public Button interactButton;
+
+    private int dialogueIndex;
+    private bool isTyping, isDialogueActive;
+
+    void Start()
+    {
+        if (interactButton != null)
+        {
+            interactButton.onClick.AddListener(OnInteractButtonClicked);  
+        }
+    }
+
+    void Update()
+    {
+
+        if (Input.GetKeyDown(KeyCode.E) && CanInteract())
+        {
+            Interact();
+        }
+    }
+
+
+    public void Interact()
+    {
+        if (dialogueData == null || (PauseController.IsGamePaused && !isDialogueActive))
+            return;
+
+        if (isDialogueActive)
+        {
+            NextLine();
+        }
+        else
+        {
+            StartDialogue();
+        }
+    }
+
+
+    public bool CanInteract()
+    {
+        return !PauseController.IsGamePaused;
+    }
+
+    void StartDialogue()
+    {
+        isDialogueActive = true;
+        dialogueIndex = 0;
+
+        nameText.SetText(dialogueData.npcName);
+        portraitImage.sprite = dialogueData.npcPortrait;
+
+        dialoguePanel.SetActive(true);
+        PauseController.SetPause(true);
+
+        dialogueText.text = dialogueData.dialogueLines[dialogueIndex];
+    }
+
+ 
+    void NextLine()
+    {
+        if (++dialogueIndex < dialogueData.dialogueLines.Length)
+        {
+
+            dialogueText.text = dialogueData.dialogueLines[dialogueIndex];
+        }
+        else
+        {
+            EndDialogue();
+        }
+    }
+
+
+    public void EndDialogue()
+    {
+        isDialogueActive = false;
+        dialogueText.text = "";
+        dialoguePanel.SetActive(false);
+        PauseController.SetPause(false); 
+    }
+
+
+    void OnInteractButtonClicked()
+    {
+        Interact();
+    }
+}</div>
+        <div id="npcdialogue" class="code-area">
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName="NewNPCDialogue", menuName = "NPC Dialogue")]
+public class NPCDialogue : ScriptableObject
+{
+    public string npcName;
+    public Sprite npcPortrait;
+    public string[] dialogueLines;
+    public bool[] autoProgressLines;
+    public float autoProgressDelay = 1.5f;
+    public float typingSpeed = 0.05f;
+    public AudioClip voiceSound;
+    public float voicePitch = 1f;
+
+}
+</div>
+        <div id="iinteractable" class="code-area">
+public interface IInteractable
+{
+    void Interact(); 
+    bool CanInteract(); 
+}
+</div>
+        <div id="pausecontroller" class="code-area">
+using UnityEngine; 
+
+public static class PauseController
+{
+    private static bool isPaused;
+
+    public static bool IsGamePaused
+    {
+        get { return isPaused; }
+    }
+
+    public static void SetPause(bool pause)
+    {
+        isPaused = pause;
+        Time.timeScale = pause ? 0 : 1;
+    }
+}
+</div>
+        <div class="status-bar">Готово</div>
+    </div>
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.code-area').forEach(area => area.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
