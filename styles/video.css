@@ -1,41 +1,54 @@
 body {
-    background-color: #1e1e1e;
-}
-.video-container {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
     text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.video-container {
+    max-width: 800px;
+    margin: 50px auto;
     padding: 20px;
-    color: #d4d4d4;
-    min-height: 100vh;
+    background: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
 }
 
 h1 {
-    color: #ffffff;
+    font-size: 28px;
+    color: #567eff;
+    margin-bottom: 20px;
 }
 
-.video-download {
+.video-container a {
     display: inline-block;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #3e3e42;
+    background-color: #0095ff;
     color: white;
     text-decoration: none;
+    padding: 12px 20px;
     border-radius: 5px;
+    font-size: 18px;
+    transition: background 0.3s ease;
 }
 
-.video-download:hover {
-    background-color: #003e67;
+.video-container a:hover {
+    background-color: #1b4db2; 
 }
 
 .back-button {
     display: inline-block;
     margin-top: 20px;
-    padding: 10px;
-    background-color: #002944;
+    background-color: #5d91c9;
     color: white;
     text-decoration: none;
+    padding: 10px 15px;
     border-radius: 5px;
+    font-size: 16px;
+    transition: background 0.3s ease;
 }
 
 .back-button:hover {
-    background-color: #002237;
+    background-color: #2274cb; 
 }
